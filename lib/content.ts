@@ -67,10 +67,25 @@ export const site = {
 };
 
 export const nav = [
+  { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
   { label: "Study abroad", href: "/study-abroad" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+];
+
+// Universities our students have been admitted to — shown as a marquee.
+export const admits = [
+  "Purdue",
+  "TU Munich",
+  "Trinity College Dublin",
+  "University of Toronto",
+  "UNSW Sydney",
+  "Imperial College London",
+  "TU Delft",
+  "ETH Zürich",
+  "University of Melbourne",
+  "Boston University",
 ];
 
 export const hero = {

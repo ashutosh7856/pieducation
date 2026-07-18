@@ -45,7 +45,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-7" aria-label="Primary">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -60,7 +60,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Link href="/contact" className="btn btn-primary px-5 py-2.5 text-sm">
             Book a free session
           </Link>
@@ -68,7 +68,7 @@ export function Header() {
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden inline-flex flex-col justify-center gap-[5px] p-2 -mr-2"
+          className="lg:hidden inline-flex flex-col justify-center gap-[5px] p-2 -mr-2"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
@@ -79,7 +79,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden fixed inset-x-0 top-18 bottom-0 bg-paper z-40 border-t border-line">
+        <div className="lg:hidden fixed inset-x-0 top-18 bottom-0 bg-paper z-40 border-t border-line">
           <nav className="container-x flex flex-col py-6" aria-label="Mobile">
             {nav.map((item) => (
               <Link
