@@ -1,18 +1,21 @@
+import Link from "next/link";
 import { nav, site } from "@/lib/content";
 import { Logo } from "./Logo";
 
 export function Footer() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="bg-forest-2 text-paper">
       <div className="container-x py-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="max-w-xs">
-            <a href="#top" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5">
               <Logo className="h-7 w-7 text-paper" />
               <span className="font-display text-xl font-extrabold text-paper">
                 {site.name}
               </span>
-            </a>
+            </Link>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-cream-dim)" }}>
               {site.description}
             </p>
@@ -25,9 +28,9 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5">
               {nav.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="text-sm text-paper/80 hover:text-paper link-underline">
+                  <Link href={item.href} className="text-sm text-paper/80 hover:text-paper link-underline">
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -50,9 +53,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 pt-8 border-t border-line-forest flex flex-col sm:flex-row items-center justify-between gap-4 text-xs" style={{ color: "var(--color-cream-dim)" }}>
-          <p>
-            © {site.established}–present {site.name}. All rights reserved.
-          </p>
+          <p>© {year} {site.name}. All rights reserved.</p>
           <p>Draft build · content is placeholder</p>
         </div>
       </div>

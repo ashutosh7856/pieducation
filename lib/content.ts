@@ -3,11 +3,11 @@
  *
  * Every value here is intended to be editable from an admin panel backed by
  * Firestore. For the draft we serve these local defaults (no DB/billing needed).
- * When you're ready to go live, `getContent()` in lib/data.ts will merge any
- * document found at Firestore `content/site` over these defaults, so the shape
- * you see here is exactly the shape the admin will write.
+ * When you're ready to go live, `getContent()` in lib/data.ts merges any
+ * document at Firestore `content/site` over these defaults, so the shape you see
+ * here is exactly the shape the admin will write.
  *
- * All placeholder copy below is safe to show a client and easy to swap.
+ * All placeholder copy is safe to show a client and easy to swap.
  */
 
 export type Service = {
@@ -24,7 +24,7 @@ export type Step = {
 };
 
 export type Destination = {
-  code: string; // ISO-ish label used by the route-map motif
+  code: string;
   name: string;
   note: string;
 };
@@ -33,7 +33,8 @@ export type Testimonial = {
   id: string;
   quote: string;
   name: string;
-  detail: string; // e.g. "SAT 1520 · admitted to Purdue"
+  detail: string;
+  avatar: string;
 };
 
 export type Stat = {
@@ -46,12 +47,17 @@ export type FaqItem = {
   a: string;
 };
 
+// Founding year, kept for computing experience. Never render this bare —
+// use `yearsGuiding` for display so the site never looks frozen in the past.
+const FOUNDED = 2013;
+
 export const site = {
   name: "Meridian",
-  tagline: "Study-abroad & admissions counselling",
+  tagline: "Education & career consultancy",
+  founded: FOUNDED,
+  yearsGuiding: `${new Date().getFullYear() - FOUNDED}+`,
   description:
-    "Meridian is an education consultancy guiding ambitious students to the right university abroad — with honest counselling, sharp test prep, and start-to-finish application support.",
-  established: 2013,
+    "Meridian guides students through every fork in the road — from choosing a stream to landing the offer. Counselling, test prep, study-abroad, and career mentorship under one roof.",
   location: "Pune, Maharashtra",
   phone: "+91 90000 00000",
   whatsapp: "+919000000000",
@@ -61,50 +67,69 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Services", href: "#services" },
-  { label: "Approach", href: "#approach" },
-  { label: "Destinations", href: "#destinations" },
-  { label: "Stories", href: "#stories" },
-  { label: "Contact", href: "#contact" },
+  { label: "Services", href: "/services" },
+  { label: "Study abroad", href: "/study-abroad" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const hero = {
-  eyebrow: "Since 2013 · 900+ students placed",
-  titleLead: "Empowering dreams,",
-  titleAccent: "guiding futures.",
-  body: "The university you belong at is rarely the one you first imagined. We help you find it — then get you in — with counselling that tells you the truth and prep that actually moves your score.",
-  primaryCta: { label: "Book a free session", href: "#contact" },
-  secondaryCta: { label: "See our approach", href: "#approach" },
+  eyebrow: "Counselling · Test prep · Study abroad · Careers",
+  titleLead: "Guidance that goes",
+  titleAccent: "the whole way.",
+  body: "From choosing the right stream to walking into the right career, one team stays with you at every step — with advice that's honest and prep that actually moves the needle.",
+  primaryCta: { label: "Book a free session", href: "/contact" },
+  secondaryCta: { label: "Explore services", href: "/services" },
+};
+
+/**
+ * Imagery. Placeholder photography (free Unsplash) so the draft feels alive —
+ * swap these URLs for the client's own shots later. Kept here so images are
+ * editable from the same admin layer as the copy.
+ */
+const U = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80`;
+export const media = {
+  hero: U("1523240795612-9a054b0db644"),      // mentors + students collaborating
+  about: U("1522202176988-66273c2fd55f"),     // a counselling session
+  studyAbroad: U("1541339907198-e08756dedf3f"), // university campus
+  contact: U("1531482615713-2afd69097998"),   // student at work
 };
 
 export const stats: Stat[] = [
+  { value: "12+", label: "Years guiding students" },
   { value: "900+", label: "Students placed" },
   { value: "42", label: "Partner universities" },
-  { value: "11", label: "Countries" },
-  { value: "10+", label: "Years guiding" },
+  { value: "1:1", label: "Senior mentorship" },
 ];
 
 export const services: Service[] = [
   {
     id: "counselling",
-    title: "Admission counselling",
+    title: "Admissions counselling",
     summary:
-      "One-on-one guidance to choose the right course, country, and shortlist — matched to your profile, not a brochure.",
-    points: ["Profile evaluation", "Course & country fit", "University shortlist"],
+      "Honest, one-on-one guidance to choose the right stream, course, and shortlist — for colleges in India and abroad, matched to your profile.",
+    points: ["Profile evaluation", "Course & campus fit", "Personalised shortlist"],
   },
   {
     id: "test-prep",
     title: "Test preparation",
     summary:
-      "Focused coaching for SAT, GRE, GMAT and IELTS with diagnostic tests, small batches, and weekly mocks.",
+      "Focused coaching for SAT, GRE, GMAT, IELTS and competitive exams — small batches, diagnostic tests, and weekly full-length mocks.",
     points: ["SAT · GRE · GMAT", "IELTS & TOEFL", "Full-length mocks"],
   },
   {
-    id: "applications",
-    title: "Application support",
+    id: "study-abroad",
+    title: "Study abroad",
     summary:
-      "Essays, SOPs, recommendations, and deadlines handled end-to-end — so nothing slips through the cracks.",
-    points: ["SOP & essay editing", "Visa documentation", "Scholarship strategy"],
+      "End-to-end support for universities across eleven countries — applications, SOPs, scholarships, and visas handled start to finish.",
+    points: ["University applications", "Scholarship strategy", "Visa & documentation"],
+  },
+  {
+    id: "careers",
+    title: "Career mentorship",
+    summary:
+      "Beyond the admit — profile building, internships, and a career map drawn with mentors who've walked the path themselves.",
+    points: ["Profile building", "Internship pathways", "Career mapping"],
   },
 ];
 
@@ -116,18 +141,18 @@ export const steps: Step[] = [
   },
   {
     id: "02",
-    title: "Profile & shortlist",
-    body: "We map your strengths against real admit data and build a shortlist of reach, match, and safe universities.",
+    title: "Plan & shortlist",
+    body: "We map your strengths against real outcomes and build a plan — courses, exams, and a reach-to-safe shortlist.",
   },
   {
     id: "03",
-    title: "Prep & applications",
-    body: "Test coaching, essays, and paperwork run in parallel against every deadline, reviewed by a senior counsellor.",
+    title: "Prep & apply",
+    body: "Coaching, essays, and paperwork run in parallel against every deadline, reviewed by a senior mentor.",
   },
   {
     id: "04",
-    title: "Offers & departure",
-    body: "We compare offers and scholarships, handle visas, and prep you for the move — right up to boarding.",
+    title: "Offers & beyond",
+    body: "We compare offers and scholarships, handle the logistics, and stay on for career guidance long after.",
   },
 ];
 
@@ -144,23 +169,26 @@ export const testimonials: Testimonial[] = [
   {
     id: "t1",
     quote:
-      "I came in fixated on one country. Meridian pushed back with data, and I ended up somewhere better than my dream school — with a scholarship I didn't know I qualified for.",
+      "I came in fixated on one plan. Meridian pushed back with data, and I ended up somewhere better than my dream school — with a scholarship I didn't know I qualified for.",
     name: "Ananya R.",
-    detail: "MS Computer Science · admitted to Purdue",
+    detail: "MS Computer Science · Purdue",
+    avatar: U("1494790108377-be9c29b29330"),
   },
   {
     id: "t2",
     quote:
       "The test prep was ruthless in the best way. Weekly mocks, real feedback, no fluff. My GRE went up 14 points in six weeks.",
     name: "Karan M.",
-    detail: "GRE 329 · admitted to TU Munich",
+    detail: "GRE 329 · TU Munich",
+    avatar: U("1500648767791-00dcc994a43e"),
   },
   {
     id: "t3",
     quote:
-      "They treated my SOP like it mattered. Three rewrites later it actually sounded like me — and three universities said yes.",
+      "They treated my application like it mattered. Three rewrites later it actually sounded like me — and three universities said yes.",
     name: "Fatima S.",
-    detail: "MSc Finance · admitted to Trinity College Dublin",
+    detail: "MSc Finance · Trinity College Dublin",
+    avatar: U("1438761681033-6461ffad8d80"),
   },
 ];
 
@@ -170,8 +198,12 @@ export const faqs: FaqItem[] = [
     a: "Yes. The discovery call is free and has no obligation. We'd rather earn your trust than sell you a package on day one.",
   },
   {
+    q: "Do you only help with studying abroad?",
+    a: "No. Study abroad is one of four things we do. We also handle admissions counselling for Indian colleges, test prep, and long-term career mentorship.",
+  },
+  {
     q: "When should I start the process?",
-    a: "Ideally 12–15 months before your intake, so test prep and applications aren't rushed. That said, we regularly help students on tighter timelines.",
+    a: "The earlier the better, so nothing is rushed — but we regularly help students on tight timelines too. Book a call and we'll tell you honestly where you stand.",
   },
   {
     q: "Do you help with scholarships and visas?",

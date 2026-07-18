@@ -1,65 +1,86 @@
-import { hero, stats } from "@/lib/content";
-import { RouteMap } from "./RouteMap";
+import Image from "next/image";
+import Link from "next/link";
+import { hero, media, stats } from "@/lib/content";
 
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
-      {/* soft sage glow anchored bottom-left */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-40 -top-24 h-[42rem] w-[42rem] rounded-full opacity-60 blur-3xl"
-        style={{ background: "radial-gradient(circle, var(--color-sage), transparent 62%)" }}
+        className="pointer-events-none absolute -left-48 -top-40 h-[46rem] w-[46rem] rounded-full opacity-70 blur-3xl"
+        style={{ background: "radial-gradient(circle, var(--color-sage), transparent 60%)" }}
       />
 
-      <div className="container-x relative grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-8 items-center pt-14 pb-20 lg:pt-20 lg:pb-28">
+      <div className="container-x relative grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-12 items-center pt-16 pb-24 lg:pt-24 lg:pb-32">
         {/* left: the thesis */}
-        <div className="max-w-xl">
+        <div className="max-w-2xl">
           <p className="eyebrow">{hero.eyebrow}</p>
 
-          <h1 className="display-xl mt-6 text-ink">
-            {hero.titleLead}
-            <br />
-            <span className="italic font-body font-medium text-terra">
+          <h1 className="display-2xl mt-7 text-ink">
+            {hero.titleLead}{" "}
+            <span className="font-serif italic font-normal text-terra">
               {hero.titleAccent}
             </span>
           </h1>
 
-          <p className="lede mt-7 max-w-md">{hero.body}</p>
+          <p className="lede mt-8 max-w-lg">{hero.body}</p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <a
-              href={hero.primaryCta.href}
-              className="inline-flex items-center gap-2 rounded-full bg-forest px-6 py-3.5 font-display text-base font-semibold text-paper hover:bg-forest-2 transition-colors"
-            >
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link href={hero.primaryCta.href} className="btn btn-primary px-7 py-4 text-base">
               {hero.primaryCta.label}
               <span aria-hidden>→</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href={hero.secondaryCta.href}
               className="font-display text-base font-semibold text-ink link-underline"
             >
               {hero.secondaryCta.label}
-            </a>
+            </Link>
           </div>
         </div>
 
-        {/* right: the signature route map */}
+        {/* right: photograph + floating credential */}
         <div className="relative">
-          <div className="rounded-3xl border border-line bg-paper-2/60 p-5 sm:p-8">
-            <RouteMap className="w-full h-auto" />
+          <div className="relative aspect-[4/5] sm:aspect-[5/5] w-full overflow-hidden rounded-[2rem] border border-line">
+            <Image
+              src={media.hero}
+              alt="A counsellor guiding a student through their options"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              className="object-cover"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(to top, rgba(12,36,27,0.28), transparent 45%)" }}
+            />
+          </div>
+
+          {/* floating glass badge */}
+          <div className="absolute -bottom-5 -left-3 sm:left-6 rounded-2xl bg-paper/90 backdrop-blur border border-line px-5 py-4 shadow-[0_20px_40px_-24px_rgba(18,50,39,0.5)]">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest text-paper font-display text-sm font-bold">
+                1:1
+              </span>
+              <div>
+                <div className="font-display text-sm font-bold text-ink">Senior mentors</div>
+                <div className="text-xs text-moss">not junior agents</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* stats rail — hairline grid stays clean at any column count */}
+      {/* stats rail */}
       <div className="border-y border-line bg-line">
         <div className="container-x grid grid-cols-2 md:grid-cols-4 gap-px bg-line">
           {stats.map((s) => (
-            <div key={s.label} className="bg-paper px-2 py-7 text-center">
-              <div className="font-display text-4xl md:text-5xl font-extrabold text-forest">
+            <div key={s.label} className="bg-paper px-3 py-9 text-center">
+              <div className="font-display text-4xl md:text-5xl font-extrabold text-forest tracking-tight">
                 {s.value}
               </div>
-              <div className="mt-1.5 text-sm text-moss">{s.label}</div>
+              <div className="mt-2 text-sm text-moss">{s.label}</div>
             </div>
           ))}
         </div>
