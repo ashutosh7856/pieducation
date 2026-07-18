@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   Modern Academic — design tokens
+   Forest green is the anchor. Cream is the ground. Terracotta is a spark.
+   ========================================================================= */
+@theme {
+  /* Surfaces */
+  --color-paper: #faf6ef;        /* primary background (warm cream) */
+  --color-paper-2: #f2ecdf;      /* alternating section band */
+  --color-sage: #e7eee4;         /* soft green tint block */
+  --color-forest: #163529;       /* deep green surfaces / dark sections */
+  --color-forest-2: #0f2a20;     /* deeper green (footer, gradients) */
+
+  /* Ink */
+  --color-ink: #14261e;          /* headings + body on cream */
+  --color-moss: #4d6a55;         /* muted secondary text on cream */
+  --color-cream-dim: #cdd8ca;    /* muted text on forest */
+
+  /* Accent */
+  --color-terra: #c4623c;        /* terracotta accent — used sparingly */
+  --color-terra-2: #ad5230;      /* terracotta hover */
+
+  /* Lines */
+  --color-line: #e4ddce;         /* hairline on cream */
+  --color-line-forest: #2b5140;  /* hairline on forest */
+
+  /* Type */
+  --font-display: var(--font-bricolage);
+  --font-body: var(--font-newsreader);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- base ---- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, .font-display {
+  font-family: var(--font-display), "Segoe UI", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+
+/* ---- reusable primitives ---- */
+.container-x {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 768px) {
+  .container-x { padding-inline: 2.5rem; }
+}
+
+/* Eyebrow / section label — grotesque, tracked, small */
+.eyebrow {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-terra);
+}
+.eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  display: inline-block;
+}
+
+/* Fluid display sizes */
+.display-xl { font-size: clamp(2.6rem, 6.5vw, 5.2rem); }
+.display-lg { font-size: clamp(2.1rem, 4.4vw, 3.4rem); }
+.display-md { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+
+.lede {
+  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--color-moss);
+}
+
+/* Links get a terracotta underline that grows on hover */
+.link-underline {
+  background-image: linear-gradient(var(--color-terra), var(--color-terra));
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.3s var(--ease-out-soft);
+}
+.link-underline:hover { background-size: 100% 1.5px; }
+
+/* Accessible focus */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-terra);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-terra);
+  color: #fff;
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
