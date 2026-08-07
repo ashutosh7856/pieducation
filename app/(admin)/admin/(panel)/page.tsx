@@ -116,8 +116,8 @@ export default async function EnquiriesPage(props: {
 
       {storageMode() !== "firestore" && (
         <p className="mx-4 mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 sm:mx-6">
-          Enquiries are being written to a local file, so they won&apos;t survive a deploy. Set the{" "}
-          <code>FIREBASE_*</code> variables and restart.
+          New enquiries aren&apos;t being saved permanently and will be lost on the next update.
+          Ask your developer to check the site&apos;s database connection.
         </p>
       )}
 

@@ -17,6 +17,14 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const ADMIN_SUBDOMAIN = "admin";
 
+/**
+ * Set ADMIN_HOST (e.g. "admin.kabir.com") once that hostname actually resolves
+ * and is attached to the deployment. Until then /admin is served in place on
+ * whatever host it's asked for — redirecting to a subdomain that isn't wired up
+ * yet just bounces people to the marketing site.
+ */
+const ADMIN_HOST = process.env.ADMIN_HOST?.trim().toLowerCase().split(":")[0];
+
 function withBase(req: NextRequest, base: string, rewriteTo?: URL) {
   const headers = new Headers(req.headers);
   headers.set("x-admin-base", base);
@@ -40,7 +48,9 @@ export default function proxy(req: NextRequest) {
   const [hostname, port] = host.toLowerCase().split(":");
   const { pathname } = req.nextUrl;
   const onAdminHost =
-    hostname === ADMIN_SUBDOMAIN || hostname.startsWith(`${ADMIN_SUBDOMAIN}.`);
+    hostname === ADMIN_HOST ||
+    hostname === ADMIN_SUBDOMAIN ||
+    hostname.startsWith(`${ADMIN_SUBDOMAIN}.`);
 
   if (onAdminHost) {
     // admin.example.com/admin/team — someone pasted the old URL. One canonical
@@ -56,11 +66,12 @@ export default function proxy(req: NextRequest) {
   }
 
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    // No subdomain available in development — serve the panel where it stands.
-    if (isBareHost(hostname)) return withBase(req, "/admin");
+    // Nowhere to send them: no admin hostname configured, or a host that can't
+    // have a subdomain (localhost, an IP). Serve the panel where it stands.
+    if (!ADMIN_HOST || isBareHost(hostname)) return withBase(req, "/admin");
 
     const target = req.nextUrl.clone();
-    target.host = `${ADMIN_SUBDOMAIN}.${hostname.replace(/^www\./, "")}`;
+    target.host = ADMIN_HOST;
     if (port) target.port = port;
     target.pathname = pathname.slice("/admin".length) || "/";
     return NextResponse.redirect(target);

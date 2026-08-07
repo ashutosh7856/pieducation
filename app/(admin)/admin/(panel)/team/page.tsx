@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { currentAdmin } from "@/lib/adminAuth";
-import { listAdmins } from "@/lib/adminUsers";
+import { listAdminCredentials } from "@/lib/adminUsers";
 import AddAdminForm from "./AddAdminForm";
 import AdminRow from "./AdminRow";
 import PageHeader from "../_components/PageHeader";
@@ -9,7 +9,8 @@ export const metadata: Metadata = { title: "Team" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminTeamPage() {
-  const [me, admins] = await Promise.all([currentAdmin(), listAdmins()]);
+  // The layout has already established that there's a signed-in admin.
+  const [me, admins] = await Promise.all([currentAdmin(), listAdminCredentials()]);
 
   return (
     <>

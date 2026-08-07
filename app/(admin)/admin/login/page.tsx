@@ -47,18 +47,13 @@ export default async function AdminLoginPage() {
   if (await currentAdmin()) redirect((await adminBase()) || "/");
 
   if (!isFirebaseConfigured()) {
-    return (
-      <Card
-        title="Can't reach the database"
-        sub={
-          <>
-            Admin accounts live in Firestore. Set <code>FIREBASE_PROJECT_ID</code>,{" "}
-            <code>FIREBASE_CLIENT_EMAIL</code> and <code>FIREBASE_PRIVATE_KEY</code>, then restart
-            the server.
-          </>
-        }
-      />
+    // Anyone can load this page, so it says nothing about how the site is put
+    // together. The detail goes to the server log, where it's of use.
+    console.error(
+      "[admin] Sign-in unavailable: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and " +
+        "FIREBASE_PRIVATE_KEY must all be set. Restart after setting them.",
     );
+    return <Card title="Sign-in is unavailable" sub="Please try again in a few minutes." />;
   }
 
   // Open to anyone only while there are no accounts at all — see login/actions.ts.
@@ -66,7 +61,7 @@ export default async function AdminLoginPage() {
     return (
       <Card
         title="Create the first admin"
-        sub="This account is written straight to the database. Add everyone else from Team afterwards."
+        sub="Choose a username and password. You can add the rest of your team once you're in."
       >
         <BootstrapAdminForm />
       </Card>

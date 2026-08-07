@@ -2,13 +2,14 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { addAdmin } from "../actions";
+import PasswordField from "./PasswordField";
 
 export default function AddAdminForm() {
   const [error, formAction, pending] = useActionState(addAdmin, null);
   const ref = useRef<HTMLFormElement>(null);
 
   // Clear the fields once the action reports success, so a stray second submit
-  // can't re-post the password that's still sitting in the inputs.
+  // can't re-post them. The password is listed against the account below.
   useEffect(() => {
     if (!pending && error === null) ref.current?.reset();
   }, [pending, error]);
@@ -17,8 +18,7 @@ export default function AddAdminForm() {
     <form ref={ref} action={formAction} className="card p-5">
       <h2 className="font-display text-lg font-bold">Add an admin</h2>
       <p className="mt-1 text-sm text-muted">
-        They sign in with the username and password you set here. Send the password over
-        something other than email.
+        Pick a password here, or generate one. It stays visible against their name below.
       </p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -39,14 +39,7 @@ export default function AddAdminForm() {
           autoComplete="off"
           className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm"
         />
-        <input
-          type="text"
-          name="password"
-          required
-          placeholder="Password"
-          autoComplete="off"
-          className="rounded-lg border border-line bg-white px-3 py-2.5 text-sm"
-        />
+        <PasswordField label="Password for the new admin" />
       </div>
 
       {error && (

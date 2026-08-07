@@ -6,20 +6,23 @@
  */
 import "server-only";
 import { getAdminDb, isFirebaseConfigured } from "./firebaseAdmin";
-import { hashPassword, needsRehash, verifyPassword } from "./password";
+import { isHashed, verifyPassword } from "./password";
 
 export { isFirebaseConfigured };
 
 export type Admin = {
   username: string;
-  /** An scrypt hash — see lib/password.ts. Never the password itself. */
+  /**
+   * The password as typed. Stored in the clear so the Team page can show it to
+   * whoever needs to pass it on.
+   */
   password: string;
   name: string;
   createdAt: string;
   lastLoginAt: string | null;
 };
 
-/** What pages get. The password stays server-side. */
+/** What most pages get — the password is only sent where it's displayed. */
 export type AdminSummary = Omit<Admin, "password">;
 
 export type Result<T = void> = { ok: true; value: T } | { ok: false; error: string };
@@ -53,6 +56,24 @@ export async function listAdmins(): Promise<AdminSummary[]> {
     .map(strip);
 }
 
+/**
+ * The same list with passwords attached, for the Team page. Every signed-in
+ * admin can read every account's password — there are no roles here, so this is
+ * open to anyone who can reach the panel. Call it only behind `requireAdmin()`.
+ *
+ * An account left over from when passwords were hashed reads as null: the digest
+ * can't be reversed. Its owner's next sign-in replaces it, or set a new one.
+ */
+export async function listAdminCredentials(): Promise<
+  (AdminSummary & { password: string | null })[]
+> {
+  const snap = await admins().get();
+  return snap.docs
+    .map((d) => d.data() as Admin)
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    .map((a) => ({ ...strip(a), password: isHashed(a.password) ? null : a.password }));
+}
+
 export async function countAdmins(): Promise<number> {
   return (await admins().count().get()).data().count;
 }
@@ -77,7 +98,7 @@ export async function createAdmin(input: {
 
   const admin: Admin = {
     username,
-    password: await hashPassword(input.password),
+    password: input.password,
     name: (input.name ?? "").trim().slice(0, 80) || username,
     createdAt: new Date().toISOString(),
     lastLoginAt: null,
@@ -98,7 +119,7 @@ export async function setAdminPassword(username: string, password: string): Prom
   if (!u || !(await admins().doc(u).get()).exists) return { ok: false, error: "No such admin." };
   if (!password) return { ok: false, error: "Password can't be empty." };
 
-  await admins().doc(u).update({ password: await hashPassword(password) });
+  await admins().doc(u).update({ password });
   return { ok: true, value: undefined };
 }
 
@@ -128,10 +149,10 @@ export async function authenticate(
   }
 
   const lastLoginAt = new Date().toISOString();
-  // A correct password is the only chance to upgrade a stored one, since the
-  // hash can't be derived from the old value.
+  // A correct sign-in is the only way to recover the password behind an old
+  // hash, so take it — after this the account shows up on the Team page.
   const patch: Partial<Admin> = { lastLoginAt };
-  if (needsRehash(admin.password)) patch.password = await hashPassword(password);
+  if (isHashed(admin.password)) patch.password = password;
 
   await admins().doc(admin.username).update(patch);
   return { ok: true, value: strip({ ...admin, lastLoginAt }) };

@@ -67,8 +67,9 @@ export default async function AdminCollegesPage(props: {
       <div className="space-y-4 p-4 sm:p-6">
         {source === "bundled" && (
           <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
-            These colleges are being read from the bundled file, not the database, so edits
-            can&apos;t be saved. Check the <code>FIREBASE_*</code> variables and restart.
+            Editing is unavailable — changes to a college won&apos;t save. The public site is
+            still showing this list. Ask your developer to check the site&apos;s database
+            connection.
           </p>
         )}
         {saved && (
@@ -145,7 +146,6 @@ export default async function AdminCollegesPage(props: {
                       >
                         {c.name}
                       </Link>
-                      <p className="text-xs text-muted">/{c.slug}</p>
                     </td>
                     <td className="whitespace-nowrap text-sm">{c.stream}</td>
                     <td className="whitespace-nowrap text-sm">{c.city ?? "—"}</td>
