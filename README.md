@@ -8,8 +8,10 @@ colleges; every tool funnels into a lead form; the client reads the leads at
 Modelled on [promoteducation.com](https://promoteducation.com) — same page
 structure and funnel, scoped to one state and backed by our own scraped dataset.
 
-> **Draft note:** "Meridian" is a stand-in brand name. Swap `site` in
-> `lib/content.ts` for the client's real name, phone, email and address.
+> **Draft note:** "PiEducations" is the brand this copy runs under. Phone, email
+> and address in `site` (`lib/content.ts`) are still placeholders — swap them for
+> the real ones. This deployment is otherwise identical to the sibling site; only
+> the name and the Firebase project differ.
 
 ## Run it
 
@@ -24,9 +26,24 @@ Browsing runs with **no infrastructure at all** — the 192 colleges ship in the
 repo. Leads, admin sign-in and editing colleges all need Firebase Firestore:
 fill in the `FIREBASE_*` variables and restart. The catalogue already lives in
 Firestore; with an empty `admins` collection, `/admin/login` offers a "create
-first admin" form that writes the account straight to the database. There are
-no seed scripts and no credentials in env — accounts are managed from
-`/admin/team`.
+first admin" form that writes the account straight to the database. No
+credentials live in env — accounts are managed from `/admin/team`.
+
+### Rebuilding the database elsewhere
+
+`scripts/firestore-migrate.mjs` copies Firestore between projects — how this
+deployment's catalogue was built from the sibling site's:
+
+```bash
+node scripts/firestore-migrate.mjs export --env ../<other-site>/.env.local \
+  --collections colleges --out dump.json
+node scripts/firestore-migrate.mjs import --sa ./service-account.json --in dump.json
+```
+
+`leads`, `admins` and `admin_sessions` are never copied unless named in
+`--collections`: leads are the other site's personal data, and admin accounts
+are per-deployment. `--dry-run` prints the plan; importing into a collection
+that already has documents needs `--overwrite`.
 
 ## The data
 
