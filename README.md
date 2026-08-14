@@ -29,22 +29,6 @@ Firestore; with an empty `admins` collection, `/admin/login` offers a "create
 first admin" form that writes the account straight to the database. No
 credentials live in env — accounts are managed from `/admin/team`.
 
-### Rebuilding the database elsewhere
-
-`scripts/firestore-migrate.mjs` copies Firestore between projects — how this
-deployment's catalogue was built from the sibling site's:
-
-```bash
-node scripts/firestore-migrate.mjs export --env ../<other-site>/.env.local \
-  --collections colleges --out dump.json
-node scripts/firestore-migrate.mjs import --sa ./service-account.json --in dump.json
-```
-
-`leads`, `admins` and `admin_sessions` are never copied unless named in
-`--collections`: leads are the other site's personal data, and admin accounts
-are per-deployment. `--dry-run` prints the plan; importing into a collection
-that already has documents needs `--overwrite`.
-
 ## The data
 
 `data/colleges.json` — **192 Maharashtra colleges**, scraped and normalised:
